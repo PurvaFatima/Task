@@ -25,7 +25,7 @@ export default function AppSidebar() {
   const isExpanded = state === "expanded";
 
   return (
-    <Sidebar collapsible="icon" variant="floating" className="rounded-2xl">
+    <Sidebar collapsible="icon" className="rounded-2xl">
       {/* Sidebar header: Logo icon + text */}
       <SidebarHeader className="px-2 py-4">
         <div className="flex items-center justify-start gap-3">
