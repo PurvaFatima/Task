@@ -60,7 +60,7 @@ export default function AppSidebar() {
               <SidebarMenuItem>
                 <SidebarMenuButton asChild>
                   <a
-                    href="/"
+                    href="/dashboard"
                     className="flex items-center gap-3 px-2 py-1"
                     style={{
                       backgroundColor: "#e2e2e2ff",

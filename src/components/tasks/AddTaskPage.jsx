@@ -46,7 +46,7 @@ export default function AddTaskPage() {
   const [form, setForm] = useState({
     title: "",
     dueDate: null,
-    assignee: "Select",
+    assignee: "",
     priority: "Select",
     status: "Pending",
     description: "",
@@ -63,7 +63,7 @@ export default function AddTaskPage() {
     const newErrors = {};
     if (!form.title.trim()) newErrors.title = "Title is required";
     if (!form.dueDate) newErrors.dueDate = "Due date is required";
-    if (form.assignee === "Select") newErrors.assignee = "Assignee is required";
+    if (!form.assignee || !form.assignee.trim()) newErrors.assignee = "Assignee is required";
     if (form.dueDate && form.dueDate.isBefore(today, "day"))
       newErrors.dueDate = "Due date must be today or future";
 
@@ -142,26 +142,17 @@ export default function AddTaskPage() {
                   </Box>
 
                   <Box mt={3}>
-                    <FormControl
+                    <TextField
+                      label="Assignee"
+                      placeholder="Assignee name"
+                      value={form.assignee}
+                      onChange={(e) => handleChange("assignee")(e.target.value)}
+                      error={!!errors.assignee}
+                      helperText={errors.assignee}
                       fullWidth
                       size="small"
-                      error={!!errors.assignee}
                       sx={fieldStyle}
-                    >
-                      <InputLabel>Assignee</InputLabel>
-                      <Select
-                        value={form.assignee}
-                        onChange={(e) =>
-                          handleChange("assignee")(e.target.value)
-                        }
-                      >
-                        {assigneeOptions.map((a) => (
-                          <MenuItem key={a} value={a}>
-                            {a}
-                          </MenuItem>
-                        ))}
-                      </Select>
-                    </FormControl>
+                    />
                   </Box>
                 </Grid>
 
