@@ -83,7 +83,7 @@ export default function AddTaskPage() {
     addTask(newTask);
     
     console.log("New task:", newTask);
-    router.push("/");
+    router.push("/dashboard");
   };
 
   // Shared styles for fields to match Figma

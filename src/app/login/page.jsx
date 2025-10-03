@@ -16,10 +16,15 @@ import Visibility from "@mui/icons-material/Visibility";
 import VisibilityOff from "@mui/icons-material/VisibilityOff";
 import Link from "next/link";
 import { useRouter } from "next/navigation";
+import { useAuth } from "@/hooks/useAuth";
 
 export default function LoginPage() {
   const [showPassword, setShowPassword] = React.useState(false);
   const router = useRouter();
+  const { login } = useAuth();
+  const [email, setEmail] = React.useState("");
+  const [password, setPassword] = React.useState("");
+  const [error, setError] = React.useState("");
 
   return (
     <Box
@@ -55,13 +60,15 @@ export default function LoginPage() {
             Welcome to Taska! 👋🏻
           </Typography>
 
-          <Box component="form" sx={{ display: "grid", gap: 2.5 }}>
-            <TextField label="Email" type="email" fullWidth size="small" />
+          <Box component="form" sx={{ display: "grid", gap: 2.5 }} onSubmit={(e)=>{e.preventDefault();}}>
+            <TextField label="Email" type="email" fullWidth size="small" value={email} onChange={(e)=>setEmail(e.target.value)} />
             <TextField
               label="Password"
               type={showPassword ? "text" : "password"}
               fullWidth
               size="small"
+              value={password}
+              onChange={(e)=>setPassword(e.target.value)}
               InputProps={{
                 endAdornment: (
                   <InputAdornment position="end">
@@ -72,6 +79,7 @@ export default function LoginPage() {
                 ),
               }}
             />
+            {error && <Typography variant="caption" color="error">{error}</Typography>}
 
             <Button
               variant="contained"
@@ -84,7 +92,15 @@ export default function LoginPage() {
                 borderRadius: 1.5,
                 fontWeight: 700,
               }}
-              onClick={() => router.push("/dashboard")}
+              onClick={async () => {
+                try {
+                  setError("");
+                  await login(email, password);
+                  router.push("/dashboard");
+                } catch (e) {
+                  setError("Invalid email or password");
+                }
+              }}
             >
               LOGIN
             </Button>

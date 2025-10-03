@@ -2,6 +2,7 @@
 
 import { SidebarTrigger } from "@/components/ui/sidebar";
 import { Menu } from "lucide-react";
+import { useAuth } from "@/hooks/useAuth";
 
 /**
  * AppHeader Component
@@ -11,6 +12,16 @@ import { Menu } from "lucide-react";
  * - Logout button on the right
  */
 export function AppHeader() {
+  const { logout } = useAuth();
+  const handleLogout = async () => {
+    try {
+      await logout();
+    } finally {
+      if (typeof window !== "undefined") {
+        window.location.href = "/login";
+      }
+    }
+  };
   return (
     <header
       className="flex justify-between items-center w-full px-6 py-0"
@@ -61,10 +72,7 @@ export function AppHeader() {
           border: "none",
           cursor: "pointer"
         }}
-        onClick={() => {
-          // Add logout logic here (e.g., signOut from auth provider)
-          console.log("Logout clicked");
-        }}
+        onClick={handleLogout}
       >
         Logout
       </button>

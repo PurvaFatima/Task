@@ -1,4 +1,5 @@
 // app/dashboard/page.jsx
+"use client";
 import DashboardLayout from "@/components/layout/DashboardLayout";
 import dynamic from "next/dynamic";
 
