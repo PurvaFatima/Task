@@ -47,17 +47,22 @@ export default function TasksTable() {
         sx={{ borderRadius: 2, overflow: "hidden", boxShadow: 3 }} 
         className="rounded-2xl shadow-lg bg-white"
       >
-        <Table sx={{ minWidth: 650, '& .MuiTableCell-root': { py: 2, px: 3 } }}>
+        <Table sx={{ 
+          minWidth: 650, 
+          '& .MuiTableCell-root': { py: 2, px: 3 },
+        }}>
           <TableHead>
             <TableRow>
-              {["Name", "Due Date", "Assignee", "Priority", "Status", "Action"].map((h) => (
+              {["Name", "Due Date", "Assignee", "Priority", "Status", "Action"].map((h, index) => (
                 <TableCell 
                   key={h} 
                   sx={{ 
                     fontWeight: 600, 
                     color: "text.primary",
                     borderBottom: "2px solid",
-                    borderColor: "grey.200"
+                    borderColor: "grey.200",
+                    // Hide columns on mobile except Name (index 0) and Action (index 5)
+                    display: { xs: index === 0 || index === 5 ? 'table-cell' : 'none', md: 'table-cell' }
                   }}
                 >
                   {h}

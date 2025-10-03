@@ -67,9 +67,9 @@ export default function TaskRow({ task }) {
           {task.name}
         </span>
       </TableCell>
-      <TableCell sx={{ color: "text.secondary" }}>{formattedDueDate}</TableCell>
-      <TableCell sx={{ color: "text.primary" }}>{task.assignee}</TableCell>
-      <TableCell>
+      <TableCell sx={{ color: "text.secondary", display: { xs: 'none', md: 'table-cell' } }}>{formattedDueDate}</TableCell>
+      <TableCell sx={{ color: "text.primary", display: { xs: 'none', md: 'table-cell' } }}>{task.assignee}</TableCell>
+      <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
         {/* Priority Trigger */}
         <Box
           sx={{ 
@@ -127,7 +127,7 @@ export default function TaskRow({ task }) {
           ))}
         </Menu>
       </TableCell>
-      <TableCell>
+      <TableCell sx={{ display: { xs: 'none', md: 'table-cell' } }}>
         {/* Status Trigger */}
         <Chip 
           label={task.status} 
