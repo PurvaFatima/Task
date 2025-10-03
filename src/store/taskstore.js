@@ -36,18 +36,28 @@ const useTaskStore = create(persist((set) => ({
   })),
   
   // Update task priority
-  updateTaskPriority: (taskId, newPriority) => set((state) => ({
-    tasks: state.tasks.map((task) =>
+  updateTaskPriority: (taskId, newPriority) => set((state) => {
+    const updatedTasks = state.tasks.map((task) =>
       task.id === taskId ? { ...task, priority: newPriority } : task
-    )
-  })),
+    );
+    const updatedTask = updatedTasks.find((t) => t.id === taskId);
+    return {
+      tasks: updatedTasks,
+      detailTask: state.detailTask && state.detailTask.id === taskId ? updatedTask : state.detailTask,
+    };
+  }),
   
   // Update task status
-  updateTaskStatus: (taskId, newStatus) => set((state) => ({
-    tasks: state.tasks.map((task) =>
+  updateTaskStatus: (taskId, newStatus) => set((state) => {
+    const updatedTasks = state.tasks.map((task) =>
       task.id === taskId ? { ...task, status: newStatus } : task
-    )
-  })),
+    );
+    const updatedTask = updatedTasks.find((t) => t.id === taskId);
+    return {
+      tasks: updatedTasks,
+      detailTask: state.detailTask && state.detailTask.id === taskId ? updatedTask : state.detailTask,
+    };
+  }),
   
   // Update entire task (for editing multiple fields)
   updateTask: (taskId, updatedFields) => set((state) => ({
