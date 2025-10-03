@@ -13,16 +13,18 @@ import { Menu } from "lucide-react";
 export function AppHeader() {
   return (
     <header
-      className="flex justify-between items-center w-full px-6 py-0 "
+      className="flex justify-between items-center w-full px-6 py-0"
       style={{ 
         backgroundColor: "#FFFFFF", 
-        height: "84px"
+        height: "10px",
+        minHeight: "84px",  // Ensures fixed minimum height
+        overflow: "hidden"  // Prevents any content overflow
       }}
     >
       {/* Left section: Collapse button + Title */}
-      <div className="flex items-center gap-4">
+      <div className="flex items-center gap-4 flex-shrink-0">
         <SidebarTrigger
-          className="flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200"
+          className="flex items-center justify-center p-2 rounded-lg hover:bg-gray-100 transition-colors duration-200 flex-shrink-0"
           title="Toggle Sidebar"
         >
           <Menu size={20} strokeWidth={2} />
@@ -46,7 +48,7 @@ export function AppHeader() {
       {/* Logout button on the right */}
       <button
         type="button"
-        className="flex items-center justify-center rounded-xl hover:bg-blue-600 transition-colors duration-200"
+        className="flex items-center justify-center rounded-xl hover:bg-blue-600 transition-colors duration-200 flex-shrink-0"
         style={{
           width: "127px",
           height: "44px",
