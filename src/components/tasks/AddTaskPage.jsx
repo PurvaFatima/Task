@@ -21,6 +21,8 @@ import { DatePicker } from "@mui/x-date-pickers/DatePicker";
 import { LocalizationProvider } from "@mui/x-date-pickers/LocalizationProvider";
 import { AdapterDayjs } from "@mui/x-date-pickers/AdapterDayjs";
 import dayjs from "dayjs";
+import Link from "next/link";
+import useTaskStore from "@/store/taskstore";
 
 const priorityOptions = ["Low", "Normal", "High"];
 const statusOptions = ["Pending", "Active", "Closed"];
@@ -37,12 +39,15 @@ const assigneeOptions = [
 export default function AddTaskPage() {
   const router = useRouter();
   const today = React.useMemo(() => dayjs(), []);
+  
+  // Zustand store
+  const addTask = useTaskStore((state) => state.addTask);
 
   const [form, setForm] = useState({
     title: "",
     dueDate: null,
     assignee: "Select",
-    priority: "",
+    priority: "Select",
     status: "Pending",
     description: "",
   });
@@ -65,63 +70,39 @@ export default function AddTaskPage() {
     setErrors(newErrors);
     if (Object.keys(newErrors).length > 0) return;
 
-    console.log("New task:", {
-      ...form,
+    // Add task to Zustand store
+    const newTask = {
+      name: form.title,
       dueDate: form.dueDate.format("YYYY-MM-DD"),
-    });
-    router.push("/dashboard");
+      assignee: form.assignee,
+      priority: form.priority,
+      status: form.status,
+      description: form.description,
+    };
+    
+    addTask(newTask);
+    
+    console.log("New task:", newTask);
+    router.push("/");
   };
 
   // Shared styles for fields to match Figma
   const fieldStyle = {
     "& .MuiOutlinedInput-root": {
-      borderRadius: "12px", // Rounded corners
-      fontSize: "12px",
+      borderRadius: 2,
       "& fieldset": { borderColor: "#E5E7EB" },
-      "&:hover fieldset": { borderColor: "#9CA3AF" },
+      "&:hover fieldset": { borderColor: "#C7CDD3" },
       "&.Mui-focused fieldset": { borderColor: "#546FFF" },
-    },
-    "& .MuiInputLabel-root": {
-      fontSize: "12px",
-      fontWeight: 500,
-      color: "#374151",
     },
   };
 
   return (
     <LocalizationProvider dateAdapter={AdapterDayjs}>
-      <Box
-        sx={{
-          p: 3,
-          bgcolor: "#FAFAFA",
-          minHeight: "100vh",
-          display: "flex",
-          alignItems: "center",
-          justifyContent: "center",
-        }}
-      >
-        <Card
-          sx={{
-            maxWidth: 900,
-            width: "100%",
-            boxShadow: "0 4px 20px rgba(0,0,0,0.08)",
-            borderRadius: "16px",
-            border: "1px solid #E5E7EB",
-          }}
-        >
+      <Box sx={{ p: { xs: 2, md: 4 } }}>
+        <Card sx={{ maxWidth: 1100, mx: "auto", borderRadius: 3, boxShadow: 1 }}>
           <CardContent sx={{ p: { xs: 3, md: 5 } }}>
-            <Typography
-              variant="h5"
-              fontWeight={700}
-              gutterBottom
-              sx={{
-                mb: 4,
-                color: "#111827",
-                fontFamily: "'Plus Jakarta Sans', sans-serif",
-                fontSize: "20px",
-              }}
-            >
-              Create Task
+            <Typography variant="h5" fontWeight={700} sx={{ mb: 4 }}>
+              Create New Task
             </Typography>
 
             {/* Form Grid */}
@@ -137,8 +118,7 @@ export default function AddTaskPage() {
                     error={!!errors.title}
                     helperText={errors.title}
                     fullWidth
-                    size="large"
-                    InputLabelProps={{ shrink: true }}
+                    size="small"
                     sx={fieldStyle}
                   />
 
@@ -151,10 +131,9 @@ export default function AddTaskPage() {
                       slotProps={{
                         textField: {
                           fullWidth: true,
-                          size: "large",
+                          size: "small",
                           error: !!errors.dueDate,
                           helperText: errors.dueDate,
-                          InputLabelProps: { shrink: true },
                           placeholder: "Select date",
                           sx: fieldStyle,
                         },
@@ -169,7 +148,7 @@ export default function AddTaskPage() {
                       error={!!errors.assignee}
                       sx={fieldStyle}
                     >
-                      <InputLabel shrink>Assignee</InputLabel>
+                      <InputLabel>Assignee</InputLabel>
                       <Select
                         value={form.assignee}
                         onChange={(e) =>
@@ -194,7 +173,7 @@ export default function AddTaskPage() {
                     error={!!errors.priority}
                     sx={fieldStyle}
                   >
-                    <InputLabel shrink>Priority</InputLabel>
+                    <InputLabel>Priority</InputLabel>
                     <Select
                       value={form.priority}
                       onChange={(e) => handleChange("priority")(e.target.value)}
@@ -209,7 +188,7 @@ export default function AddTaskPage() {
 
                   <Box mt={3}>
                     <FormControl fullWidth size="small" sx={fieldStyle}>
-                      <InputLabel shrink>Status</InputLabel>
+                      <InputLabel>Status</InputLabel>
                       <Select
                         value={form.status}
                         onChange={(e) => handleChange("status")(e.target.value)}
@@ -235,7 +214,6 @@ export default function AddTaskPage() {
                       rows={4}
                       fullWidth
                       size="small"
-                      InputLabelProps={{ shrink: true }}
                       sx={fieldStyle}
                     />
                   </Box>
@@ -251,12 +229,11 @@ export default function AddTaskPage() {
                     bgcolor: "#546FFF",
                     "&:hover": { bgcolor: "#3f52c5" },
                     textTransform: "none",
-                    borderRadius: "12px",
+                    borderRadius: 2,
                     px: 4,
                     py: 1.5,
                     fontWeight: 600,
                     fontSize: "16px",
-                    fontFamily: "'Plus Jakarta Sans', sans-serif",
                     color: "#FFFFFF",
                     minWidth: "140px",
                     height: "48px",

@@ -1,13 +1,13 @@
-// TaskRow.jsx (updated with actual MUI Flag icon import, keeping Menu popups and no outlines)
+// components/tasks/TaskRow.jsx
 "use client";
 
 import * as React from "react";
 import PropTypes from "prop-types";
 import { useState } from "react";
 import { TableRow, TableCell, IconButton, Menu, MenuItem, Box, Chip } from "@mui/material";
-import Flag from "@mui/icons-material/Flag";  // Default import for Flag icon
+import Flag from "@mui/icons-material/Flag";
 import DeleteIcon from "@mui/icons-material/Delete";
-import Link from "next/link";
+import useTaskStore from "@/store/taskstore";
 
 const priorityColorMap = {
   Low: "#FBBF24", // yellow
@@ -24,9 +24,15 @@ const statusColorMap = {
 const priorityOptions = Object.keys(priorityColorMap);
 const statusOptions = Object.keys(statusColorMap);
 
-export default function TaskRow({ task, tasks, setTasks, setDeleteTask }) {
+export default function TaskRow({ task }) {
   const [priorityAnchorEl, setPriorityAnchorEl] = useState(null);
   const [statusAnchorEl, setStatusAnchorEl] = useState(null);
+  
+  // Zustand store actions
+  const updateTaskPriority = useTaskStore((state) => state.updateTaskPriority);
+  const updateTaskStatus = useTaskStore((state) => state.updateTaskStatus);
+  const setDeleteTask = useTaskStore((state) => state.setDeleteTask);
+  const setDetailTask = useTaskStore((state) => state.setDetailTask);
 
   const openPriorityMenu = (event) => setPriorityAnchorEl(event.currentTarget);
   const closePriorityMenu = () => setPriorityAnchorEl(null);
@@ -34,12 +40,12 @@ export default function TaskRow({ task, tasks, setTasks, setDeleteTask }) {
   const closeStatusMenu = () => setStatusAnchorEl(null);
 
   const handlePriorityChange = (newPriority) => {
-    setTasks(tasks.map((t) => (t.id === task.id ? { ...t, priority: newPriority } : t)));
+    updateTaskPriority(task.id, newPriority);
     closePriorityMenu();
   };
 
   const handleStatusChange = (newStatus) => {
-    setTasks(tasks.map((t) => (t.id === task.id ? { ...t, status: newStatus } : t)));
+    updateTaskStatus(task.id, newStatus);
     closeStatusMenu();
   };
 
@@ -54,12 +60,12 @@ export default function TaskRow({ task, tasks, setTasks, setDeleteTask }) {
   return (
     <TableRow hover sx={{ '&:hover': { bgcolor: 'grey.50' } }}>
       <TableCell>
-        <Link 
-          href={`/tasks/${task.id}`} 
-          className="text-blue-600 hover:underline font-medium"
+        <span 
+          className="text-blue-600 hover:underline font-medium cursor-pointer"
+          onClick={() => setDetailTask(task)}
         >
           {task.name}
-        </Link>
+        </span>
       </TableCell>
       <TableCell sx={{ color: "text.secondary" }}>{formattedDueDate}</TableCell>
       <TableCell sx={{ color: "text.primary" }}>{task.assignee}</TableCell>
@@ -94,7 +100,7 @@ export default function TaskRow({ task, tasks, setTasks, setDeleteTask }) {
             '& .MuiMenu-paper': { 
               borderRadius: 2, 
               minWidth: 120, 
-              bgcolor: '#F0F9FF', // Light blue background to match image
+              bgcolor: '#F0F9FF',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
             } 
           }}
@@ -148,7 +154,7 @@ export default function TaskRow({ task, tasks, setTasks, setDeleteTask }) {
             '& .MuiMenu-paper': { 
               borderRadius: 2, 
               minWidth: 100, 
-              bgcolor: '#F0F9FF', // Light blue background to match image
+              bgcolor: '#F0F9FF',
               boxShadow: '0 4px 12px rgba(0,0,0,0.1)'
             } 
           }}
@@ -199,7 +205,4 @@ export default function TaskRow({ task, tasks, setTasks, setDeleteTask }) {
 
 TaskRow.propTypes = {
   task: PropTypes.object.isRequired,
-  tasks: PropTypes.array.isRequired,
-  setTasks: PropTypes.func.isRequired,
-  setDeleteTask: PropTypes.func.isRequired,
 };

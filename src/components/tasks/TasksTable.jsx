@@ -1,10 +1,10 @@
-// src/components/tasks/TasksTable.jsx (updated: "Create New" button routes to /addTask)
+// src/components/tasks/TasksTable.jsx
 "use client";
 
 import * as React from "react";
-import { useRouter } from "next/navigation";
 import { Box, Paper, Button } from "@mui/material";
 import DeleteTaskDialog from "./DeleteTaskDialog";
+import TaskDetailsDialog from "./TaskDetailsDialog";
 import TaskRow from "./TaskRow";
 import Table from "@mui/material/Table";
 import TableBody from "@mui/material/TableBody";
@@ -13,44 +13,32 @@ import TableContainer from "@mui/material/TableContainer";
 import TableHead from "@mui/material/TableHead";
 import TableRow from "@mui/material/TableRow";
 import Link from "next/link";
+import useTaskStore from "@/store/taskstore";
 
-export default function TasksTable() {  
-
-  const [tasks, setTasks] = React.useState([
-    {
-      id: "1",
-      name: "Create Mobile App",
-      dueDate: "2026-01-20",
-      assignee: "Saud Shaikh",
-      priority: "Low",
-      status: "Pending",
-      description: "Develop a new mobile application for the client.",
-    },
-    // ... add other sample tasks
-  ]);
-
-  const [deleteTask, setDeleteTask] = React.useState(null);
+export default function TasksTable() {
+  // Zustand store
+  const tasks = useTaskStore((state) => state.tasks);
 
   return (
     <Box sx={{ mt: 4 }}>
       {/* Button Container - Aligned Right */}
       <Box sx={{ display: "flex", justifyContent: "flex-end", alignItems: "center", mb: 3, p: 0.75 }}>
-         <Link href="/addTask" passHref>
-      <Button
-        variant="contained"
-        sx={{
-          bgcolor: "#546FFF",
-          "&:hover": { bgcolor: "#3f52c5" },
-          textTransform: "none",
-          borderRadius: 2,
-          px: 3,
-          py: 1,
-          fontWeight: 600
-        }}
-      >
-        Create New
-      </Button>
-    </Link>
+        <Link href="/addTask" passHref>
+          <Button
+            variant="contained"
+            sx={{
+              bgcolor: "#546FFF",
+              "&:hover": { bgcolor: "#3f52c5" },
+              textTransform: "none",
+              borderRadius: 2,
+              px: 3,
+              py: 1,
+              fontWeight: 600
+            }}
+          >
+            Create New
+          </Button>
+        </Link>
       </Box>
 
       {/* Tasks Table */}
@@ -80,13 +68,14 @@ export default function TasksTable() {
 
           <TableBody>
             {tasks.map((task) => (
-              <TaskRow key={task.id} task={task} tasks={tasks} setTasks={setTasks} setDeleteTask={setDeleteTask} />
+              <TaskRow key={task.id} task={task} />
             ))}
           </TableBody>
         </Table>
       </TableContainer>
 
-      <DeleteTaskDialog task={deleteTask} setTask={setDeleteTask} tasks={tasks} setTasks={setTasks} />
+      <DeleteTaskDialog />
+      <TaskDetailsDialog />
     </Box>
   );
 }

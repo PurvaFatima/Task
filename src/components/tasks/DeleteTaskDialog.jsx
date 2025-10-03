@@ -1,16 +1,21 @@
-// DeleteTaskDialog.jsx (minor polish: added Tailwind class for button, consistent styling)
+// components/tasks/DeleteTaskDialog.jsx
 "use client";
 
 import * as React from "react";
-import PropTypes from "prop-types";
-import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Box } from "@mui/material";
+import { Dialog, DialogTitle, DialogContent, DialogContentText, DialogActions, Button, Box, Typography } from "@mui/material";
+import useTaskStore from "@/store/taskstore";
 
-export default function DeleteTaskDialog({ task, setTask, tasks, setTasks }) {
-  const handleClose = () => setTask(null);
+export default function DeleteTaskDialog() {
+  // Zustand store
+  const task = useTaskStore((state) => state.deleteTask);
+  const setDeleteTask = useTaskStore((state) => state.setDeleteTask);
+  const removeTask = useTaskStore((state) => state.removeTask);
+
+  const handleClose = () => setDeleteTask(null);
 
   const handleDelete = () => {
     if (task) {
-      setTasks(tasks.filter((t) => t.id !== task.id));
+      removeTask(task.id);
     }
     handleClose();
   };
@@ -49,10 +54,3 @@ export default function DeleteTaskDialog({ task, setTask, tasks, setTasks }) {
     </Dialog>
   );
 }
-
-DeleteTaskDialog.propTypes = {
-  task: PropTypes.object,
-  setTask: PropTypes.func.isRequired,
-  tasks: PropTypes.array.isRequired,
-  setTasks: PropTypes.func.isRequired,
-};
